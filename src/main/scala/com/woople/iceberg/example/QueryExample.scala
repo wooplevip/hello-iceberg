@@ -1,6 +1,8 @@
 package com.woople.iceberg.example
 
+import org.apache.iceberg.spark.IcebergSpark
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.types.DataTypes
 
 object QueryExample {
   def main(args: Array[String]): Unit = {
@@ -14,7 +16,9 @@ object QueryExample {
       .config("spark.sql.extensions", "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions")
       .getOrCreate()
 
-    spark.sql("select *  from local.iceberg_db.movielens_ratings ").show(false)
+    IcebergSpark.registerBucketUDF(spark, "iceberg_bucket4", DataTypes.IntegerType, 4)
+
+    spark.sql("select *  from local.iceberg_db.movielens_ratings where iceberg_bucket4(userId)==0").show(false)
 
     spark.stop()
   }

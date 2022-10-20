@@ -1,6 +1,9 @@
 package com.woople.iceberg.example
 
 import org.apache.spark.sql.SparkSession
+import org.apache.iceberg.spark.IcebergSpark
+import org.apache.spark.sql.functions.expr
+import org.apache.spark.sql.types.DataTypes
 
 object PartitionExample02 {
   def main(args: Array[String]): Unit = {
@@ -22,6 +25,8 @@ object PartitionExample02 {
       .option("delimiter", ",")
       .load("data/movielens_ratings.csv")
 
+    IcebergSpark.registerBucketUDF(spark, "iceberg_bucket4", DataTypes.LongType, 4)
+
     val fields = df.schema.fields.map(_.toDDL).mkString(", ")
     val partitionField = "bucket(4, userId)"
 
@@ -35,7 +40,8 @@ object PartitionExample02 {
         TBLPROPERTIES ('format-version'='2')
         """)
 
-    df.writeTo("local.iceberg_db.movielens_ratings").append()
+    df.sortWithinPartitions(expr("iceberg_bucket4(userId)"))
+      .writeTo("local.iceberg_db.movielens_ratings").append()
 
     spark.stop()
   }
