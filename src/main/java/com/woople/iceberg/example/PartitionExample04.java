@@ -16,8 +16,21 @@ public class PartitionExample04 {
         TableIdentifier name = TableIdentifier.of("iceberg_db", "movielens_ratings");
         Table table = catalog.loadTable(name);
 
+        //removePartition(table);
+        addPartition(table);
+    }
+
+    public static void addPartition(Table table) {
         table.updateSpec()
                 .addField(bucket("userId", 4))
+                //.addField("userId")
                 .commit();
     }
+
+    public static void removePartition(Table table) {
+        table.updateSpec()
+                .removeField(bucket("userId", 4))
+                .commit();
+    }
+
 }

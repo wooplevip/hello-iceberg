@@ -12,7 +12,7 @@ object PartitionExample03 {
       .config("spark.sql.catalog.local.type", "hadoop")
       .config("spark.sql.catalog.local.warehouse", "warehouse")
       .config("spark.sql.extensions", "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions")
-      .config("spark.sql.sources.partitionOverwriteMode", "static")
+      //.config("spark.sql.sources.partitionOverwriteMode", "static")
       .getOrCreate()
 
     val df = spark.read
