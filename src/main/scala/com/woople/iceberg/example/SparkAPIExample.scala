@@ -1,6 +1,7 @@
 package com.woople.iceberg.example
 
-import org.apache.iceberg.spark.Spark3Util
+import org.apache.iceberg.Schema
+import org.apache.iceberg.spark.{Spark3Util, SparkSchemaUtil}
 import org.apache.spark.sql.SparkSession
 
 object SparkAPIExample {
@@ -15,9 +16,13 @@ object SparkAPIExample {
       .config("spark.sql.extensions", "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions")
       .getOrCreate()
 
-    val table = Spark3Util.loadIcebergTable(spark, "local.iceberg_db.movielens_ratings")
+    val table = Spark3Util.loadIcebergTable(spark, "local.iceberg_db.logs01")
 
-    println(table.schemas())
+    println(table.schema())
+
+    val schema = SparkSchemaUtil.schemaForTable(spark, "local.iceberg_db.logs01")
+
+    println(schema)
 
 
     spark.stop()
