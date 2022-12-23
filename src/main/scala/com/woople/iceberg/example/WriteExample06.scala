@@ -15,7 +15,7 @@ object WriteExample06 {
       .config("spark.sql.extensions", "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions")
       .getOrCreate()
 
-    val tableName = "local.iceberg_db.logs01"
+    val tableName = "local.iceberg_db.logs03"
 
     val structType = new StructType()
       .add("uuid", StringType, false)

@@ -12,7 +12,7 @@ import org.apache.iceberg.types.Types;
 
 public class JavaAPIExample {
     public static void main(String[] args) {
-        createTable();
+        showSnapshot();
     }
 
     public static void query() {
@@ -30,6 +30,32 @@ public class JavaAPIExample {
                 .build();
 
         result.forEach(x -> System.out.println(x.toString()));
+    }
+
+    public static void showSnapshot() {
+        Configuration conf = new Configuration();
+        String warehousePath = "warehouse";
+        HadoopCatalog catalog = new HadoopCatalog(conf, warehousePath);
+        TableIdentifier name = TableIdentifier.of("iceberg_db", "logs03");
+        Table table = catalog.loadTable(name);
+
+
+        System.out.println(table.currentSnapshot().snapshotId());
+        //to 4652265015940457934
+
+        table.manageSnapshots().setCurrentSnapshot(4652265015940457934L).commit();
+
+        //table.expireSnapshots().expireOlderThan(5L).commit();
+
+
+        for (Snapshot snapshot : table.snapshots()) {
+
+            System.out.println(snapshot.parentId()+"=====");
+
+            System.out.println(snapshot.snapshotId());
+            System.out.println(snapshot.summary());
+        }
+
     }
 
     public static void descTable() {
